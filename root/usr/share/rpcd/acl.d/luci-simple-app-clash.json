@@ -1,0 +1,11 @@
+{
+  "luci-app-simple-clash": {
+    "description": "Grant UCI access for clash",
+    "read": {
+      "uci": ["clash"]
+    },
+    "write": {
+      "uci": ["clash"]
+    }
+  }
+}
