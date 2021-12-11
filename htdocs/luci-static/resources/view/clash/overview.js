@@ -47,6 +47,7 @@ return view.extend({
     o.datatype = "port";
     o.rmempty = false;
     o.default = 0;
+
     o = s.taboption(
       "general",
       form.Flag,
@@ -69,6 +70,7 @@ return view.extend({
     o.datatype = "ipaddr";
     o.rmempty = false;
     o.default = "127.0.0.1";
+
     o = s.taboption(
       "addition",
       form.Flag,
@@ -100,6 +102,12 @@ return view.extend({
     o = s.taboption("dns", form.Value, "dns_port", _("DNS Port"));
     o.datatype = "port";
     o.rmempty = false;
+
+    o = s.taboption("dns", form.Value, "dns_mode", _("DNS Mode"));
+    o.value("redir-host", "redir-host");
+    o.value("fake-ip", "fake-ip");
+    o.rmempty = false;
+
     o = s.taboption(
       "dns",
       form.DynamicList,
@@ -114,6 +122,7 @@ return view.extend({
     o.rmempty = false;
 
     o = s.taboption("dns", form.DynamicList, "fallback", _("Fallbacks"));
+    o.depends("dns_mode", "redir-host");
     o.datatype = "string";
     o.rmempty = false;
 
