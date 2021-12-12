@@ -10,7 +10,7 @@ return view.extend({
   render: function (data) {
     let m, s, o;
 
-    m = new form.Map("clash", _("Simple Clash"), _("descriptions"));
+    m = new form.Map("clash", _("Simple Clash"), _("LuCI support for clash to translate traffic. More infomation is available at the <a href=\"https://github.com/Dreamacro/clash/wiki\">official ducument<a/>"));
 
     s = m.section(form.NamedSection, "global", "clash", _("Settings"));
     s.tab("general", _("Basic Options"));
@@ -62,7 +62,7 @@ return view.extend({
     o.rmempty = false;
     o.default = 0;
 
-    o = s.taboption("addition", form.Value, "prog", _("Execute"));
+    o = s.taboption("addition", form.Value, "prog", _("Custom Path"));
     o.datatype = "string";
     o.rmempty = false;
     o.default = "/usr/bin/clash";
