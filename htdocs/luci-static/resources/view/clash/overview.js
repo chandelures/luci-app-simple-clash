@@ -20,6 +20,20 @@ return view.extend({
     o = s.taboption("general", form.Flag, "enabled", _("Enabled"));
     o.rmempty = false;
 
+    o = s.taboption(
+      "general",
+      form.Flag,
+      "tproxy_enabled",
+      _("TProxy Enabled")
+    );
+    o.rmempty = false;
+
+    o = s.taboption("general", form.Value, "tproxy_port", _("TProxy Port"));
+    o.depends("tproxy_enabled", "1");
+    o.datatype = "port";
+    o.rmempty = false;
+    o.default = 7893;
+
     o = s.taboption("general", form.Value, "current_profile", _("Profile"));
     for (const v of L.uci.sections(data[0], "profile")) {
       o.value(v[".name"], v[".name"]);
@@ -48,19 +62,10 @@ return view.extend({
     o.rmempty = false;
     o.default = 0;
 
-    o = s.taboption(
-      "general",
-      form.Flag,
-      "tproxy_enabled",
-      _("TProxy Enabled")
-    );
+    o = s.taboption("addition", form.Value, "prog", _("Execute"));
+    o.datatype = "string";
     o.rmempty = false;
-
-    o = s.taboption("general", form.Value, "tproxy_port", _("TProxy Port"));
-    o.depends("tproxy_enabled", "1");
-    o.datatype = "port";
-    o.rmempty = false;
-    o.default = 7893;
+    o.default = "/usr/bin/clash";
 
     o = s.taboption("addition", form.Flag, "allow_lan", _("Allow Lan"));
     o.rmempty = false;
