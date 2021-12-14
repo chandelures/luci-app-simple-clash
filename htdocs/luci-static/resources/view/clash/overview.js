@@ -2,15 +2,40 @@
 "require form";
 "require view";
 "require uci";
+"require rpc";
 
 return view.extend({
+  callGetServiceStatus: rpc.declare({
+    object: "luci.clash",
+    method: "get_service_status",
+    expect: {},
+  }),
   load: function () {
-    return Promise.all([L.uci.load("clash")]);
+    return Promise.all([this.callGetServiceStatus(), uci.load("clash")]);
   },
   render: function (data) {
+    let status = data[0];
     let m, s, o;
 
-    m = new form.Map("clash", _("Simple Clash"), _("LuCI support for clash to translate traffic. More infomation is available at the <a href=\"https://github.com/Dreamacro/clash/wiki\">official ducument<a/>"));
+    m = new form.Map(
+      "clash",
+      _("Simple Clash"),
+      _(
+        'LuCI support for clash to translate traffic. More infomation is available at the <a href="https://github.com/Dreamacro/clash/wiki">official ducument<a/>'
+      )
+    );
+
+    s = m.section(form.NamedSection, "global", "_info", _("Infomations"));
+
+    o = s.option(form.DummyValue, "_enabled", "Status");
+    o.cfgvalue = function () {
+      return status["enabled"] ? "Running" : "Not Running";
+    };
+
+    o = s.option(form.DummyValue, "_version", "Version");
+    o.cfgvalue = function () {
+      return status["version"];
+    };
 
     s = m.section(form.NamedSection, "global", "clash", _("Settings"));
     s.tab("general", _("Basic Options"));

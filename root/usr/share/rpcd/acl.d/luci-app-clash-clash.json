@@ -2,6 +2,9 @@
   "luci-app-simple-clash": {
     "description": "Grant UCI access for clash",
     "read": {
+      "ubus": {
+        "luci.clash": ["get_service_status"]
+      },
       "uci": ["clash"]
     },
     "write": {
