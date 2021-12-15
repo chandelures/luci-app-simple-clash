@@ -8,7 +8,7 @@ local methods = {
         call = function()
             local res = {}
             res["enabled"] = sys.call("pidof clash >/dev/null") == 0
-            res["version"] = string.sub(sys.exec("clash -v"), 6, 11)
+            res["version"] = sys.exec("clash -v")
             return res
         end
     }
