@@ -266,7 +266,7 @@ return view.extend({
                       type
                     ),
                   },
-                  _("Create service")
+                  _("Create profile")
                 ),
               ]),
             ],
