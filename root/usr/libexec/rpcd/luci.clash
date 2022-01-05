@@ -9,6 +9,7 @@ local methods = {
             local res = {}
             res["enabled"] = sys.call("pidof clash >/dev/null") == 0
             res["version"] = sys.exec("clash -v")
+            res["dashboard"] = sys.call("opkg list-installed | grep \"clash-dashboard\" >/dev/null") == 0
             return res
         end
     }

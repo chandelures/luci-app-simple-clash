@@ -16,8 +16,8 @@ return view.extend({
     return Promise.all([this.callGetServiceStatus(), uci.load("clash")]);
   },
   render: function (data) {
-    let status = data[0];
-    let m, s, o;
+    var status = data[0];
+    var m, s, o;
 
     m = new form.Map(
       "clash",
@@ -27,17 +27,38 @@ return view.extend({
       )
     );
 
-    s = m.section(form.NamedSection, "global", "_info", _("Infomations"));
+    s = m.section(form.NamedSection, "global", null, _("Infomations"));
 
-    o = s.option(form.DummyValue, "_enabled", "Status");
+    o = s.option(form.DummyValue, null, "Status");
     o.cfgvalue = function () {
       return status["enabled"] ? "Running" : "Not Running";
     };
 
-    o = s.option(form.DummyValue, "_version", "Version");
+    o = s.option(form.DummyValue, null, "Version");
     o.cfgvalue = function () {
       return status["version"];
     };
+
+    if (status["dashboard"]) {
+      o = s.option(form.DummyValue, null, "Web Interface");
+      o.cfgvalue = function () {
+        return E(
+          "botton",
+          {
+            class: "cbi-button cbi-button-apply",
+            click: function () {
+              var path = "clash-dashboard";
+              var host = window.location.host;
+              var protocol = window.location.protocol;
+              window.open(
+                "%s//%s/%s?hostname=%s".format(protocol, host, path, host)
+              );
+            },
+          },
+          _("Dashboard")
+        );
+      };
+    }
 
     s = m.section(form.NamedSection, "global", "clash", _("Settings"));
     s.tab("general", _("Basic Options"));
@@ -81,7 +102,7 @@ return view.extend({
       _("Profile"),
       _("List of avaliable configurations for clash.")
     );
-    for (const v of L.uci.sections("clash", "profile")) {
+    for (var v of L.uci.sections("clash", "profile")) {
       o.value(v[".name"], v[".name"]);
     }
     o.rmempty = false;
@@ -285,7 +306,7 @@ return view.extend({
     s.anonymous = true;
     s.addbtntitle = _("Add new profiles...");
     s.modaltitle = function (section_id) {
-      return _("Clash Profiles") + " - " + section_id;
+      return _("Clash Profiles - %s".format(section_id));
     };
 
     o = s.option(form.DummyValue, "_cfg_name", _("Name"));
@@ -301,10 +322,10 @@ return view.extend({
     o = s.option(form.TextValue, null, _("Content"));
     o.modalonly = true;
     o.monospace = true;
-    o.rows = 20;
+    o.rows = 25;
     o.load = function (section_id) {
       return fs
-        .read("/etc/clash/profiles/" + section_id + ".yaml", "")
+        .read("/etc/clash/profiles/%s.yaml".format(section_id), "")
         .then(function (value) {
           return value;
         })
@@ -314,7 +335,7 @@ return view.extend({
     };
     o.write = function (section_id, formvalue) {
       return fs
-        .write("/etc/clash/profiles/" + section_id + ".yaml", formvalue)
+        .write("/etc/clash/profiles/%s.yaml".format(section_id), formvalue)
         .then(function () {
           s.textvalue = formvalue;
           ui.addNotification(null, E("p", _("Changes have been saved.")));
@@ -328,8 +349,8 @@ return view.extend({
     };
 
     s.handleCreateProfile = function (m, name, type, ev) {
-      let section_id = name.isValid("_new_") ? name.formvalue("_new_") : null;
-      let type_value = type.isValid("_new_") ? type.formvalue("_new_") : null;
+      var section_id = name.isValid("_new_") ? name.formvalue("_new_") : null;
+      var type_value = type.isValid("_new_") ? type.formvalue("_new_") : null;
 
       if (section_id == null || type_value == "") return;
 
@@ -342,7 +363,7 @@ return view.extend({
     };
 
     s.handleAdd = function (ev) {
-      let m2, s2, name, type;
+      var m2, s2, name, type;
 
       m2 = new form.Map("clash");
       s2 = m2.section(form.NamedSection, "_new_");
