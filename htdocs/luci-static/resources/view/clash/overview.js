@@ -44,74 +44,144 @@ return view.extend({
     s.tab("addition", _("Addtional Options"));
     s.tab("dns", _("DNS Settings"));
 
-    o = s.taboption("general", form.Flag, "enabled", _("Enabled"));
+    o = s.taboption(
+      "general",
+      form.Flag,
+      "enabled",
+      _("Enabled"),
+      _("Enable the clash service.")
+    );
     o.rmempty = false;
 
     o = s.taboption(
       "general",
       form.Flag,
       "tproxy_enabled",
-      _("TProxy Enabled")
+      _("TProxy Enabled"),
+      _("Enable the transparent proxy.")
     );
     o.rmempty = false;
 
-    o = s.taboption("general", form.Value, "tproxy_port", _("TProxy Port"));
+    o = s.taboption(
+      "general",
+      form.Value,
+      "tproxy_port",
+      _("TProxy Port"),
+      _("The port of transparent proxy server.")
+    );
     o.depends("tproxy_enabled", "1");
     o.datatype = "port";
     o.rmempty = false;
     o.default = 7893;
 
-    o = s.taboption("general", form.Value, "current_profile", _("Profile"));
+    o = s.taboption(
+      "general",
+      form.Value,
+      "current_profile",
+      _("Profile"),
+      _("List of avaliable configurations for clash.")
+    );
     for (const v of L.uci.sections("clash", "profile")) {
       o.value(v[".name"], v[".name"]);
     }
     o.rmempty = false;
 
-    o = s.taboption("general", form.Value, "mode", _("Mode"));
+    o = s.taboption(
+      "general",
+      form.Value,
+      "mode",
+      _("Mode"),
+      _("Clash router mode.")
+    );
     o.value("direct", "Direct");
     o.value("rule", "Rule");
     o.value("global", "Global");
     o.rmempty = false;
     o.default = "Rule";
 
-    o = s.taboption("general", form.Value, "http_port", _("Http Port"));
+    o = s.taboption(
+      "general",
+      form.Value,
+      "http_port",
+      _("Http Port"),
+      _("The port of http proxy server. Set 0 to close http proxy.")
+    );
     o.datatype = "port";
     o.rmempty = false;
     o.default = 7890;
 
-    o = s.taboption("general", form.Value, "socks_port", _("Socks Port"));
+    o = s.taboption(
+      "general",
+      form.Value,
+      "socks_port",
+      _("Socks Port"),
+      _("The port of socks proxy server. Set 0 to close socks proxy.")
+    );
     o.datatype = "port";
     o.rmempty = false;
     o.default = 7891;
 
-    o = s.taboption("general", form.Value, "mixed_port", _("Mixed Port"));
+    o = s.taboption(
+      "general",
+      form.Value,
+      "mixed_port",
+      _("Mixed Port"),
+      _("The port of http and socks proxy server. Set 0 to close mixed proxy.")
+    );
     o.datatype = "port";
     o.rmempty = false;
     o.default = 0;
 
-    o = s.taboption("addition", form.Value, "prog", _("Custom Path"));
+    o = s.taboption(
+      "addition",
+      form.Value,
+      "prog",
+      _("Custom Path"),
+      _("The path of clash to execute.")
+    );
     o.datatype = "string";
     o.rmempty = false;
     o.default = "/usr/bin/clash";
 
-    o = s.taboption("addition", form.Flag, "allow_lan", _("Allow Lan"));
+    o = s.taboption(
+      "addition",
+      form.Flag,
+      "allow_lan",
+      _("Allow Lan"),
+      _("Allow connections to the local server.")
+    );
     o.rmempty = false;
 
-    o = s.taboption("addition", form.Value, "bind_addr", _("Bind Address"));
+    o = s.taboption(
+      "addition",
+      form.Value,
+      "bind_addr",
+      _("Bind Address"),
+      _(
+        "IP addresses be allowed to create connections. By default, this value is 0.0.0.0."
+      )
+    );
     o.depends("allow_lan", "1");
     o.datatype = "ipaddr";
     o.rmempty = false;
-    o.default = "127.0.0.1";
+    o.default = "0.0.0.0";
 
     o = s.taboption(
       "addition",
       form.Flag,
       "udp_tproxy_enabled",
-      _("UDP Tproxy")
+      _("UDP Tproxy"),
+      _("Enable UDP transparent proxy.")
     );
     o.rmempty = false;
 
-    o = s.taboption("addition", form.Value, "log_level", _("Log Level"));
+    o = s.taboption(
+      "addition",
+      form.Value,
+      "log_level",
+      _("Log Level"),
+      _("Clash by default prints log.")
+    );
     o.value("silent", "Silent");
     o.value("debug", "Debug");
     o.value("error", "Error");
@@ -119,23 +189,55 @@ return view.extend({
     o.value("info", "Info");
     o.rmempty = false;
 
-    o = s.taboption("addition", form.Value, "api_host", _("Api Address"));
+    o = s.taboption(
+      "addition",
+      form.Value,
+      "api_host",
+      _("Api Address"),
+      _("The host of Clash RESTful API.")
+    );
     o.datatype = "ipaddr";
     o.rmempty = false;
 
-    o = s.taboption("addition", form.Value, "api_port", _("Api Port"));
+    o = s.taboption(
+      "addition",
+      form.Value,
+      "api_port",
+      _("Api Port"),
+      _("The port of Clash RESTful API.")
+    );
     o.datatype = "port";
     o.rmempty = false;
 
-    o = s.taboption("dns", form.Value, "dns_host", _("DNS Host"));
+    o = s.taboption(
+      "dns",
+      form.Value,
+      "dns_host",
+      _("DNS Host"),
+      _("The host of Clash built-in DNS server.")
+    );
     o.datatype = "ipaddr";
     o.rmempty = false;
 
-    o = s.taboption("dns", form.Value, "dns_port", _("DNS Port"));
+    o = s.taboption(
+      "dns",
+      form.Value,
+      "dns_port",
+      _("DNS Port"),
+      _("The port of Clash build-in DNS server.")
+    );
     o.datatype = "port";
     o.rmempty = false;
 
-    o = s.taboption("dns", form.Value, "dns_mode", _("DNS Mode"));
+    o = s.taboption(
+      "dns",
+      form.Value,
+      "dns_mode",
+      _("DNS Mode"),
+      _(
+        "DNS server enhanced mode. Redir-host mode will response true results, Fake-ip mode will response fake results quickly but may bring some issues."
+      )
+    );
     o.value("redir-host", "redir-host");
     o.value("fake-ip", "fake-ip");
     o.rmempty = false;
@@ -144,16 +246,35 @@ return view.extend({
       "dns",
       form.DynamicList,
       "default_nameserver",
-      _("Default Nameservers")
+      _("Default Nameservers"),
+      _(
+        "Nameservers are used to resolve the DNS nameserver hostnames. Only support UDP."
+      )
     );
     o.datatype = "ipaddr";
     o.rmempty = false;
 
-    o = s.taboption("dns", form.DynamicList, "nameserver", _("Nameservers"));
+    o = s.taboption(
+      "dns",
+      form.DynamicList,
+      "nameserver",
+      _("Nameservers"),
+      _(
+        "Nameservers are used to resolve all DNS query. Support UDP, TCP, DOT, DOH."
+      )
+    );
     o.datatype = "string";
     o.rmempty = false;
 
-    o = s.taboption("dns", form.DynamicList, "fallback", _("Fallbacks"));
+    o = s.taboption(
+      "dns",
+      form.DynamicList,
+      "fallback",
+      _("Fallbacks"),
+      _(
+        "Nameservers are used to resolve the DNS query when GEOIP contry is not 'CN'. Support UDP, TCP, DOT, DOH."
+      )
+    );
     o.depends("dns_mode", "redir-host");
     o.datatype = "string";
     o.rmempty = false;
