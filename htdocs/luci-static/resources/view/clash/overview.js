@@ -174,15 +174,22 @@ return view.extend({
     };
 
     o = s.option(form.Value, "type", _("Type"));
-    o.value("file", "Static file");
+    o.value("Static", "Static");
     o.rmempty = false;
 
-    o = s.option(form.TextValue, "_content", _("Content"));
+    o = s.option(form.TextValue, null, _("Content"));
     o.modalonly = true;
     o.monospace = true;
     o.rows = 20;
     o.load = function (section_id) {
-      return fs.read("/etc/clash/profiles/" + section_id + ".yaml", "");
+      return fs
+        .read("/etc/clash/profiles/" + section_id + ".yaml", "")
+        .then(function (value) {
+          return value;
+        })
+        .catch(function (e) {
+          return "";
+        });
     };
     o.write = function (section_id, formvalue) {
       return fs
@@ -235,8 +242,8 @@ return view.extend({
 
       type = s2.option(form.Value, "type", _("Type"));
       type.rmempty = false;
-      type.value("file", "file");
-      type.default = "file";
+      type.value("Static", "Static");
+      type.default = "Static";
 
       m2.render().then(
         L.bind(function (nodes) {
