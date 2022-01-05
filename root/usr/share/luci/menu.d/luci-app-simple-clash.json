@@ -1,0 +1,15 @@
+{
+  "admin/services/clash": {
+    "title": "Simple Clash",
+    "action": {
+      "type": "view",
+      "path": "clash/overview"
+    },
+    "depends": {
+      "acl": ["luci-app-simple-clash"],
+      "uci": {
+        "clash": true
+      }
+    }
+  }
+}

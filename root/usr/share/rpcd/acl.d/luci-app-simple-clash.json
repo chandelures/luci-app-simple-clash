@@ -1,0 +1,20 @@
+{
+  "luci-app-simple-clash": {
+    "description": "Grant UCI access for clash",
+    "read": {
+      "ubus": {
+        "luci.clash": ["get_service_status"]
+      },
+      "uci": ["clash"],
+        "file": {
+          "/etc/clash/profiles/*": ["read"]
+        }
+    },
+    "write": {
+      "uci": ["clash"],
+        "file": {
+          "/etc/clash/profiles/*": ["write"]
+        }
+    }
+  }
+}

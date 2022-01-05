@@ -1,0 +1,77 @@
+#!/usr/bin/env lua
+
+local json = require "luci.jsonc"
+local sys = require "luci.sys"
+
+local methods = {
+    get_service_status = {
+        call = function()
+            local res = {}
+            res["enabled"] = sys.call("pidof clash >/dev/null") == 0
+            res["version"] = sys.exec("clash -v")
+            res["dashboard"] = sys.call("opkg list-installed | grep \"clash-dashboard\" >/dev/null") == 0
+            return res
+        end
+    }
+}
+
+local function parseInput()
+    local parse = json.new()
+    local done, err
+
+    while true do
+        local chunk = io.read(4096)
+        if not chunk then
+            break
+        elseif not done and not err then
+            done, err = parse:parse(chunk)
+        end
+    end
+
+    if not done then
+        print(json.stringify({error = err or "Incomplete input"}))
+        os.exit(1)
+    end
+
+    return parse:get()
+end
+
+local function validateArgs(func, uargs)
+    local method = methods[func]
+    if not method then
+        print(json.stringify({error = "Method not found"}))
+        os.exit(1)
+    end
+
+    if type(uargs) ~= "table" then
+        print(json.stringify({error = "Invalid arguments"}))
+        os.exit(1)
+    end
+
+    uargs.ubus_rpc_session = nil
+
+    local k, v
+    local margs = method.args or {}
+    for k, v in pairs(uargs) do
+        if margs[k] == nil or (v ~= nil and type(v) ~= type(margs[k])) then
+            print(json.stringify({error = "Invalid arguments"}))
+            os.exit(1)
+        end
+    end
+
+    return method
+end
+
+if arg[1] == "list" then
+    local _, method, rv = nil, nil, {}
+    for _, method in pairs(methods) do
+        rv[_] = method.args or {}
+    end
+    print((json.stringify(rv):gsub(":%[%]", ":{}")))
+elseif arg[1] == "call" then
+    local args = parseInput()
+    local method = validateArgs(arg[2], args)
+    local result, code = method.call(args)
+    print((json.stringify(result):gsub("^%[%]$", "{}")))
+    os.exit(code or 0)
+end
