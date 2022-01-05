@@ -5,10 +5,16 @@
       "ubus": {
         "luci.clash": ["get_service_status"]
       },
-      "uci": ["clash"]
+      "uci": ["clash"],
+        "file": {
+          "/etc/clash/profiles/*": ["read"]
+        }
     },
     "write": {
-      "uci": ["clash"]
+      "uci": ["clash"],
+        "file": {
+          "/etc/clash/profiles/*": ["write"]
+        }
     }
   }
 }
