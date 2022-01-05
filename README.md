@@ -14,7 +14,7 @@ LuCI support for Clash. Configuration of clash based on https://github.com/chand
 $ git clone https://github.com/openwrt/openwrt
 $ cd openwrt
 
-# or 
+# or
 
 $ wget https://downloads.openwrt.org/path/to/openwrt-sdk_*.tar.xz
 $ tar -Jxvf openwrt-sdk_*.tar.xz
@@ -47,6 +47,11 @@ LuCI  --->
 ```
 
 4. Build packages
+
 ```shell
 $ make package/luci-app-simple-clash/{clean,compile} V=s
 ```
+
+## Screenshot
+
+![screenshot](https://github.com/chandelures/luci-app-simple-clash/raw/master/docs/screenshot.png)
