@@ -1,8 +1,10 @@
 "use strict";
+"require ui";
 "require form";
 "require view";
 "require uci";
 "require rpc";
+"require fs";
 
 return view.extend({
   callGetServiceStatus: rpc.declare({
@@ -60,7 +62,7 @@ return view.extend({
     o.default = 7893;
 
     o = s.taboption("general", form.Value, "current_profile", _("Profile"));
-    for (const v of L.uci.sections(data[0], "profile")) {
+    for (const v of L.uci.sections("clash", "profile")) {
       o.value(v[".name"], v[".name"]);
     }
     o.rmempty = false;
@@ -161,6 +163,9 @@ return view.extend({
     s.addremove = true;
     s.anonymous = true;
     s.addbtntitle = _("Add new profiles...");
+    s.modaltitle = function (section_id) {
+      return _("Clash Profiles") + " - " + section_id;
+    };
 
     o = s.option(form.DummyValue, "_cfg_name", _("Name"));
     o.modalonly = false;
@@ -169,12 +174,48 @@ return view.extend({
     };
 
     o = s.option(form.Value, "type", _("Type"));
-    o.modalonly = false;
-    o.value("file", "file");
+    o.value("file", "Static file");
     o.rmempty = false;
+
+    o = s.option(form.TextValue, "_content", _("Content"));
+    o.modalonly = true;
+    o.monospace = true;
+    o.rows = 20;
+    o.load = function (section_id) {
+      return fs.read("/etc/clash/profiles/" + section_id + ".yaml", "");
+    };
+    o.write = function (section_id, formvalue) {
+      return fs
+        .write("/etc/clash/profiles/" + section_id + ".yaml", formvalue)
+        .then(function () {
+          s.textvalue = formvalue;
+          ui.addNotification(null, E("p", _("Changes have been saved.")));
+        })
+        .catch(function (e) {
+          ui.addNotification(
+            null,
+            E("p", _("Unable to save changes: %s").format(e.nessage))
+          );
+        });
+    };
+
+    s.handleCreateProfile = function (m, name, type, ev) {
+      let section_id = name.isValid("_new_") ? name.formvalue("_new_") : null;
+      let type_value = type.isValid("_new_") ? type.formvalue("_new_") : null;
+
+      if (section_id == null || type_value == "") return;
+
+      return m
+        .save(function () {
+          section_id = uci.add("clash", "profile", section_id);
+          uci.set("clash", section_id, "type", type_value);
+        })
+        .then(L.bind(s.renderMoreOptionsModal, s, section_id));
+    };
 
     s.handleAdd = function (ev) {
       let m2, s2, name, type;
+
       m2 = new form.Map("clash");
       s2 = m2.section(form.NamedSection, "_new_");
       s2.render = function () {
@@ -182,6 +223,7 @@ return view.extend({
           this.renderContents.bind(this)
         );
       };
+
       name = s2.option(form.Value, "name", _("Name"));
       name.rmempty = false;
       name.datatype = "uciname";
@@ -190,14 +232,16 @@ return view.extend({
           return _("The profile name is already used");
         return true;
       };
+
       type = s2.option(form.Value, "type", _("Type"));
       type.rmempty = false;
       type.value("file", "file");
       type.default = "file";
+
       m2.render().then(
         L.bind(function (nodes) {
           ui.showModal(
-            _("add new profile..."),
+            _("Add new profile..."),
             [
               nodes,
               E("div", { class: "right" }, [
@@ -209,11 +253,10 @@ return view.extend({
                     class: "cbi-button cbi-button-positive important",
                     click: ui.createHandlerFn(
                       this,
-                      "handleCreateDDnsRule",
+                      "handleCreateProfile",
                       m,
                       name,
-                      service_name,
-                      ipv6
+                      type
                     ),
                   },
                   _("Create service")
