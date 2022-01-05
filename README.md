@@ -31,7 +31,7 @@ $ git clone https://github.com/chandelures/openwrt-clash package/openwrt-clash
 $ git clone https://github.com/chandelures/luci-app-simple-clash package/luci-app-simple-clash
 ```
 
-3. Choose clash as a module or built-in module
+3. Choose luci-app-simple-clash as a module or built-in module
 
 ```shell
 $ make menuconfig
