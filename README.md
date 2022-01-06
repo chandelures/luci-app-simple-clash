@@ -1,5 +1,7 @@
 # Luci App Simple Clash
 
+[![build](https://github.com/chandelures/luci-app-simple-clash/workflows/build/badge.svg?branch=master)](https://github.com/chandelures/luci-app-simple-clash/actions?query=branch%3Amaster)
+
 ## Description
 
 LuCI support for Clash. Configuration of clash based on https://github.com/chandelures/openwrt-clash to build your tunnel on Openwrt.
