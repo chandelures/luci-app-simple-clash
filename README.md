@@ -10,6 +10,20 @@ LuCI support for Clash. Configuration of clash based on https://github.com/chand
 
 ### Manual Install
 
+1. Update list of available packages
+
+```shell
+$ opkg update
+```
+
+2. Use Opkg package manager to install .ipk from release page
+
+```shell
+$ opkg install luci-app-simple-clash_*_all.ipk
+```
+
+### Build From Source
+
 1. Download Openwrt Source Code or SDK as the basic enviroment to build the package.
 
 ```shell
