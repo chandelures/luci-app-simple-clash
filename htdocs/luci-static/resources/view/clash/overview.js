@@ -12,10 +12,17 @@ return view.extend({
     method: "get_service_status",
     expect: {},
   }),
+  callInitAction: rpc.declare({
+    object: "luci",
+    method: "setInitAction",
+    params: ["name", "action"],
+    expect: { result: false },
+  }),
   load: function () {
     return Promise.all([this.callGetServiceStatus(), uci.load("clash")]);
   },
   render: function (data) {
+    var _this = this;
     var status = data[0];
     var m, s, o;
 
@@ -29,21 +36,21 @@ return view.extend({
 
     s = m.section(form.NamedSection, "global", null, _("Infomations"));
 
-    o = s.option(form.DummyValue, null, "Status");
+    o = s.option(form.DummyValue, null, _("Status"));
     o.cfgvalue = function () {
       return status["enabled"] ? "Running" : "Not Running";
     };
 
-    o = s.option(form.DummyValue, null, "Version");
+    o = s.option(form.DummyValue, null, _("Version"));
     o.cfgvalue = function () {
       return status["version"];
     };
 
     if (status["dashboard"]) {
-      o = s.option(form.DummyValue, null, "Web Interface");
+      o = s.option(form.DummyValue, null, _("Web Interface"));
       o.cfgvalue = function () {
         return E(
-          "botton",
+          "button",
           {
             class: "cbi-button cbi-button-apply",
             click: function () {
@@ -59,6 +66,13 @@ return view.extend({
         );
       };
     }
+
+    o = s.option(form.Button, "_restart", _("Service"));
+    o.inputtitle = _("Restart");
+    o.inputstyle = "apply";
+    o.onclick = function () {
+      return _this.callInitAction("clash", "restart").then(L.bind(m.render, m));
+    };
 
     s = m.section(form.NamedSection, "global", "clash", _("Settings"));
     s.tab("general", _("Basic Options"));
