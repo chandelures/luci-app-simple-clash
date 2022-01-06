@@ -18,6 +18,12 @@ return view.extend({
     params: ["name", "action"],
     expect: { result: false },
   }),
+  handleOpenDashboard: function () {
+    var path = "clash-dashboard";
+    var host = window.location.host;
+    var protocol = window.location.protocol;
+    window.open("%s//%s/%s?hostname=%s".format(protocol, host, path, host));
+  },
   load: function () {
     return Promise.all([this.callGetServiceStatus(), uci.load("clash")]);
   },
@@ -36,35 +42,21 @@ return view.extend({
 
     s = m.section(form.NamedSection, "global", null, _("Infomations"));
 
-    o = s.option(form.DummyValue, null, _("Status"));
+    o = s.option(form.DummyValue, "_running", _("Status"));
     o.cfgvalue = function () {
-      return status["enabled"] ? "Running" : "Not Running";
+      return status["enabled"] ? _("Running") : _("Not Running");
     };
 
-    o = s.option(form.DummyValue, null, _("Version"));
+    o = s.option(form.DummyValue, "_version", _("Version"));
     o.cfgvalue = function () {
-      return status["version"];
+      return _(status["version"]);
     };
 
     if (status["dashboard"]) {
-      o = s.option(form.DummyValue, null, _("Web Interface"));
-      o.cfgvalue = function () {
-        return E(
-          "button",
-          {
-            class: "cbi-button cbi-button-apply",
-            click: function () {
-              var path = "clash-dashboard";
-              var host = window.location.host;
-              var protocol = window.location.protocol;
-              window.open(
-                "%s//%s/%s?hostname=%s".format(protocol, host, path, host)
-              );
-            },
-          },
-          _("Dashboard")
-        );
-      };
+      o = s.option(form.Button, "_dashboard", _("Web Interface"));
+      o.inputtitle = _("Dashboard");
+      o.inputstyle = "apply";
+      o.onclick = _this.handleOpenDashboard;
     }
 
     o = s.option(form.Button, "_restart", _("Service"));
