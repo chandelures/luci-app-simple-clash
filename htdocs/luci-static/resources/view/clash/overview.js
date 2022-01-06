@@ -319,35 +319,6 @@ return view.extend({
     o.value("Static", "Static");
     o.rmempty = false;
 
-    o = s.option(form.TextValue, null, _("Content"));
-    o.modalonly = true;
-    o.monospace = true;
-    o.rows = 25;
-    o.load = function (section_id) {
-      return fs
-        .read("/etc/clash/profiles/%s.yaml".format(section_id), "")
-        .then(function (value) {
-          return value;
-        })
-        .catch(function (e) {
-          return "";
-        });
-    };
-    o.write = function (section_id, formvalue) {
-      return fs
-        .write("/etc/clash/profiles/%s.yaml".format(section_id), formvalue)
-        .then(function () {
-          s.textvalue = formvalue;
-          ui.addNotification(null, E("p", _("Changes have been saved.")));
-        })
-        .catch(function (e) {
-          ui.addNotification(
-            null,
-            E("p", _("Unable to save changes: %s").format(e.nessage))
-          );
-        });
-    };
-
     s.handleCreateProfile = function (m, name, type, ev) {
       var section_id = name.isValid("_new_") ? name.formvalue("_new_") : null;
       var type_value = type.isValid("_new_") ? type.formvalue("_new_") : null;
@@ -421,6 +392,37 @@ return view.extend({
             .focus();
         }, this)
       );
+    };
+
+    s.addModalOptions = function (s, section_id) {
+      o = s.option(form.TextValue, null, _("Content"));
+      o.modalonly = true;
+      o.monospace = true;
+      o.rows = 25;
+      o.load = function (section_id) {
+        return fs
+          .read("/etc/clash/profiles/%s.yaml".format(section_id), "")
+          .then(function (value) {
+            return value;
+          })
+          .catch(function (e) {
+            return "";
+          });
+      };
+      o.write = function (section_id, formvalue) {
+        return fs
+          .write("/etc/clash/profiles/%s.yaml".format(section_id), formvalue)
+          .then(function () {
+            s.textvalue = formvalue;
+            ui.addNotification(null, E("p", _("Changes have been saved.")));
+          })
+          .catch(function (e) {
+            ui.addNotification(
+              null,
+              E("p", _("Unable to save changes: %s").format(e.nessage))
+            );
+          });
+      };
     };
 
     return m.render();
