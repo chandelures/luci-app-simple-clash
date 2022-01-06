@@ -1,6 +1,6 @@
 # Luci App Simple Clash
 
-[![build](https://github.com/chandelures/luci-app-simple-clash/workflows/build/badge.svg?branch=master)](https://github.com/chandelures/luci-app-simple-clash/actions?query=branch%3Amaster)
+[![build](https://github.com/chandelures/luci-app-simple-clash/workflows/build/badge.svg)](https://github.com/chandelures/luci-app-simple-clash/actions)
 
 ## Description
 
