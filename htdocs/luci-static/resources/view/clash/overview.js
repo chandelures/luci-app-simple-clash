@@ -204,6 +204,14 @@ return view.extend({
 
     o = s.taboption(
       "addition",
+      form.Flag,
+      "ipv6",
+      _("IPv6 Enabled"),
+      _("Enable ipv6 support.")
+    );
+
+    o = s.taboption(
+      "addition",
       form.Value,
       "log_level",
       _("Log Level"),
