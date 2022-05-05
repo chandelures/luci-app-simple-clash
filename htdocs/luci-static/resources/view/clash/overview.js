@@ -336,20 +336,39 @@ return view.extend({
 
     o = s.option(form.Value, "type", _("Type"));
     o.value("Static", "Static");
+    o.value("URL", "URL");
     o.rmempty = false;
 
-    s.handleCreateProfile = function (m, name, type, ev) {
+    o = s.option(form.Value, "url", _("URL"));
+    o.rmempty = false;
+    o.depends("type", "URL");
+
+    s.handleCreateProfile = function (m, name, type, url, ev) {
       var section_id = name.isValid("_new_") ? name.formvalue("_new_") : null;
-      var type_value = type.isValid("_new_") ? type.formvalue("_new_") : null;
+      var type_value = type.isValid("_new_") ? type.formvalue("_new_") : "";
+      var url_value = url.isValid("_new_") ? url.formvalue("_new_") : "";
 
       if (section_id == null || type_value == "") return;
+      if (type_value == "URL" && url_value == "") return;
+
+      if (uci.get("clash", section_id) != null) {
+        s.handleModalSave();
+        ui.hideModal();
+        return;
+      }
 
       return m
         .save(function () {
           section_id = uci.add("clash", "profile", section_id);
           uci.set("clash", section_id, "type", type_value);
+          if (type_value == "URL")
+            uci.set("clash", section_id, "url", url_value);
         })
-        .then(L.bind(s.renderMoreOptionsModal, s, section_id));
+        .then(function () {
+          if (type_value == "Static")
+            return s.renderMoreOptionsModal(section_id);
+          if (type_value == "URL") return ui.hideModal();
+        });
     };
 
     s.handleAdd = function (ev) {
@@ -375,7 +394,12 @@ return view.extend({
       type = s2.option(form.Value, "type", _("Type"));
       type.rmempty = false;
       type.value("Static", "Static");
+      type.value("URL", "URL");
       type.default = "Static";
+
+      url = s2.option(form.Value, "url", _("URL"));
+      url.depends("type", "URL");
+      url.rmempty = false;
 
       m2.render().then(
         L.bind(function (nodes) {
@@ -395,7 +419,8 @@ return view.extend({
                       "handleCreateProfile",
                       m,
                       name,
-                      type
+                      type,
+                      url
                     ),
                   },
                   _("Create profile")
@@ -415,9 +440,10 @@ return view.extend({
 
     s.addModalOptions = function (s, section_id) {
       o = s.option(form.TextValue, null, _("Content"));
+      o.rmempty = false;
       o.modalonly = true;
       o.monospace = true;
-      o.rows = 25;
+      o.rows = 20;
       o.load = function (section_id) {
         return fs
           .read("/etc/clash/profiles/%s.yaml".format(section_id), "")
@@ -425,7 +451,12 @@ return view.extend({
             return value;
           })
           .catch(function (e) {
-            return "";
+            type = uci.get("clash", section_id, "type");
+            if (type == "Static") return "";
+            if (type == "URL") {
+              o.readonly = true;
+              return "Please update profile first.";
+            }
           });
       };
       o.write = function (section_id, formvalue) {
@@ -438,7 +469,7 @@ return view.extend({
           .catch(function (e) {
             ui.addNotification(
               null,
-              E("p", _("Unable to save changes: %s").format(e.nessage))
+              E("p", _("Unable to save changes: %s").format(e.message))
             );
           });
       };
