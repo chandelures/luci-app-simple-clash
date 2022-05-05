@@ -348,7 +348,8 @@ return view.extend({
 
       if (uci.get("clash", section_id) != null) {
         s.handleModalSave();
-        return ui.hideModal()
+        ui.hideModal();
+        return;
       }
 
       return m
