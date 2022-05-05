@@ -323,6 +323,7 @@ return view.extend({
     s.sortable = true;
     s.addremove = true;
     s.anonymous = true;
+    s.nodescriptions = true;
     s.addbtntitle = _("Add new profiles...");
     s.modaltitle = function (section_id) {
       return _("Clash Profiles - %s".format(section_id));
@@ -339,7 +340,7 @@ return view.extend({
     o.value("URL", "URL");
     o.rmempty = false;
 
-    o = s.option(form.Value, "url", _("URL"));
+    o = s.option(form.Value, "url", _("URL"), _("This needs cRUL with SSL support, install 'curl' package first."));
     o.rmempty = false;
     o.depends("type", "URL");
 
@@ -397,7 +398,7 @@ return view.extend({
       type.value("URL", "URL");
       type.default = "Static";
 
-      url = s2.option(form.Value, "url", _("URL"));
+      url = s2.option(form.Value, "url", _("URL"), _("This needs cRUL with SSL support, install 'curl' package first."));
       url.depends("type", "URL");
       url.rmempty = false;
 
