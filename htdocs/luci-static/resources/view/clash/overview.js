@@ -452,7 +452,7 @@ return view.extend({
             return value;
           })
           .catch(function (e) {
-            type = uci.get("clash", section_id, "type");
+            var type = uci.get("clash", section_id, "type");
             if (type == "Static") return "";
             if (type == "URL") {
               o.readonly = true;
