@@ -340,7 +340,7 @@ return view.extend({
     o.value("URL", "URL");
     o.rmempty = false;
 
-    o = s.option(form.Value, "url", _("URL"), _("This needs cRUL with SSL support, install 'curl' package first."));
+    o = s.option(form.Value, "url", _("URL"), _("This needs cURL with SSL support, install 'curl' package first."));
     o.rmempty = false;
     o.depends("type", "URL");
 
@@ -398,7 +398,7 @@ return view.extend({
       type.value("URL", "URL");
       type.default = "Static";
 
-      url = s2.option(form.Value, "url", _("URL"), _("This needs cRUL with SSL support, install 'curl' package first."));
+      url = s2.option(form.Value, "url", _("URL"), _("This needs cURL with SSL support, install 'curl' package first."));
       url.depends("type", "URL");
       url.rmempty = false;
 
