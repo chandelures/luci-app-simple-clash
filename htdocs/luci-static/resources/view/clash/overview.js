@@ -57,6 +57,11 @@ return view.extend({
       o.inputtitle = _("Dashboard");
       o.inputstyle = "apply";
       o.onclick = _this.handleOpenDashboard;
+    } else {
+      o = s.option(form.DummyValue, "_dashboard", _("Web Interface"));
+      o.cfgvalue = function () {
+        return _("Please install 'clash-dashboard' package first.");
+      };
     }
 
     o = s.option(form.Button, "_restart", _("Service"));
