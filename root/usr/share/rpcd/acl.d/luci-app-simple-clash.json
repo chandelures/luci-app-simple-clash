@@ -3,18 +3,19 @@
     "description": "Grant UCI access for clash",
     "read": {
       "ubus": {
-        "luci.clash": ["get_service_status"]
+        "luci.clash": ["get_service_status", "update_profile"],
+        "luci": ["setInitAction"]
       },
       "uci": ["clash"],
-        "file": {
-          "/etc/clash/profiles/*": ["read"]
-        }
+      "file": {
+        "/etc/clash/profiles/*": ["read"]
+      }
     },
     "write": {
       "uci": ["clash"],
-        "file": {
-          "/etc/clash/profiles/*": ["write"]
-        }
+      "file": {
+        "/etc/clash/profiles/*": ["write"]
+      }
     }
   }
 }

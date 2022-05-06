@@ -3,6 +3,8 @@
 local json = require "luci.jsonc"
 local sys = require "luci.sys"
 
+local update_profile_script = "/usr/lib/clash/update_profile.sh"
+
 local methods = {
     get_service_status = {
         call = function()
@@ -10,6 +12,23 @@ local methods = {
             res["enabled"] = sys.call("pidof clash >/dev/null") == 0
             res["version"] = sys.exec("clash -v")
             res["dashboard"] = sys.call("opkg list-installed | grep \"clash-dashboard\" >/dev/null") == 0
+            return res
+        end
+    },
+    update_profile = {
+        args = {profile_name = "profile_name"},
+        call = function(args)
+            local res = {}
+            if not args or not args.profile_name then
+                res["result"] = "Require profile name"
+                return res
+            end
+            local profile_name = args.profile_name
+            if sys.call(update_profile_script .. " " .. profile_name) == 0 then
+                res["result"] = "Update profile " .. profile_name .. " finished"
+                return res
+            end
+            res["result"] = "Update profile " .. profile_name .. " failed"
             return res
         end
     }
