@@ -2,6 +2,7 @@
 "require ui";
 "require form";
 "require view";
+"require dom";
 "require uci";
 "require rpc";
 "require fs";
@@ -18,11 +19,22 @@ return view.extend({
     params: ["name", "action"],
     expect: { result: false },
   }),
+  callUpdateProfile: rpc.declare({
+    object: "luci.clash",
+    method: "update_profile",
+    params: ["profile_name"],
+    expect: {},
+  }),
   handleOpenDashboard: function () {
     var path = "clash-dashboard";
     var host = window.location.host;
     var protocol = window.location.protocol;
     window.open("%s//%s/%s?hostname=%s".format(protocol, host, path, host));
+  },
+  handleUpdateProfile: function (m, profile_name, ev) {
+    return this.callUpdateProfile(profile_name)
+      .then(L.bind(m.load, m))
+      .then(L.bind(m.render, m));
   },
   load: function () {
     return Promise.all([this.callGetServiceStatus(), uci.load("clash")]);
@@ -68,7 +80,10 @@ return view.extend({
     o.inputtitle = _("Restart");
     o.inputstyle = "apply";
     o.onclick = function () {
-      return _this.callInitAction("clash", "restart").then(L.bind(m.render, m));
+      return _this
+        .callInitAction("clash", "restart")
+        .then(L.bind(m.load, m))
+        .then(L.bind(m.render, m));
     };
 
     s = m.section(form.NamedSection, "global", "clash", _("Settings"));
@@ -340,7 +355,12 @@ return view.extend({
     o.value("URL", "URL");
     o.rmempty = false;
 
-    o = s.option(form.Value, "url", _("URL"), _("This needs cURL with SSL support, install 'curl' package first."));
+    o = s.option(
+      form.Value,
+      "url",
+      _("URL"),
+      _("This needs cURL with SSL support, install 'curl' package first.")
+    );
     o.rmempty = false;
     o.depends("type", "URL");
 
@@ -398,7 +418,12 @@ return view.extend({
       type.value("URL", "URL");
       type.default = "Static";
 
-      url = s2.option(form.Value, "url", _("URL"), _("This needs cURL with SSL support, install 'curl' package first."));
+      url = s2.option(
+        form.Value,
+        "url",
+        _("URL"),
+        _("This needs cURL with SSL support, install 'curl' package first.")
+      );
       url.depends("type", "URL");
       url.rmempty = false;
 
@@ -437,6 +462,24 @@ return view.extend({
             .focus();
         }, this)
       );
+    };
+
+    s.renderRowActions = function (section_id) {
+      var element = this.super("renderRowActions", [section_id, _("Edit")]);
+      var update_opt = {
+        class: "cbi-button cbi-button-neutral",
+        click: ui.createHandlerFn(_this, "handleUpdateProfile", m, section_id),
+        title: _("Update this profile"),
+      };
+      if (uci.get("clash", section_id, "type") != "URL")
+        update_opt["disabled"] = "disabled";
+      dom.content(element.lastChild, [
+        E("button", update_opt, _("Update")),
+        element.lastChild.childNodes[0],
+        element.lastChild.childNodes[1],
+        element.lastChild.childNodes[2],
+      ]);
+      return element;
     };
 
     s.addModalOptions = function (s, section_id) {
