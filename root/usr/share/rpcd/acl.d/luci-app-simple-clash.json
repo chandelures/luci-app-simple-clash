@@ -8,7 +8,8 @@
       },
       "uci": ["clash"],
       "file": {
-        "/etc/clash/profiles/*": ["read"]
+        "/etc/clash/profiles/*": ["read"],
+        "/sbin/logread": ["exec"]
       }
     },
     "write": {

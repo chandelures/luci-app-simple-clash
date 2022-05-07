@@ -2,14 +2,30 @@
   "admin/services/clash": {
     "title": "Simple Clash",
     "action": {
-      "type": "view",
-      "path": "clash/overview"
+      "type": "alias",
+      "path": "admin/services/clash/overview"
     },
     "depends": {
       "acl": ["luci-app-simple-clash"],
       "uci": {
         "clash": true
       }
+    }
+  },
+  "admin/services/clash/overview": {
+    "title": "Overview",
+    "order": 10,
+    "action": {
+      "type": "view",
+      "path": "clash/overview"
+    }
+  },
+  "admin/services/clash/logview": {
+    "title": "Log View",
+    "order": 20,
+    "action": {
+      "type": "view",
+      "path": "clash/logview"
     }
   }
 }
