@@ -33,6 +33,10 @@ return view.extend({
   },
   handleUpdateProfile: function (m, profile_name, ev) {
     return this.callUpdateProfile(profile_name)
+      .then(function (data) {
+        if (!data["success"])
+          ui.addNotification(null, E("p", _(data["message"])));
+      })
       .then(L.bind(m.load, m))
       .then(L.bind(m.render, m));
   },
