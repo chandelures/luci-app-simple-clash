@@ -11,7 +11,7 @@ local methods = {
             local res = {}
             res["enabled"] = sys.call("pidof clash >/dev/null") == 0
             res["version"] = sys.exec("clash -v")
-            res["dashboard"] = sys.call("opkg list-installed | grep \"clash-dashboard\" >/dev/null") == 0
+            res["dashboard"] = sys.call('opkg list-installed | grep "clash-dashboard" >/dev/null') == 0
             return res
         end
     },
@@ -20,15 +20,18 @@ local methods = {
         call = function(args)
             local res = {}
             if not args or not args.profile_name then
-                res["result"] = "Require profile name"
+                res["success"] = false
+                res["message"] = "Require profile name"
                 return res
             end
             local profile_name = args.profile_name
             if sys.call(update_profile_script .. " " .. profile_name) == 0 then
-                res["result"] = "Update profile " .. profile_name .. " finished"
+                res["success"] = true
+                res["message"] = "Update profile " .. profile_name .. " finished"
                 return res
             end
-            res["result"] = "Update profile " .. profile_name .. " failed"
+            res["success"] = false
+            res["message"] = "Update profile " .. profile_name .. " failed"
             return res
         end
     }
