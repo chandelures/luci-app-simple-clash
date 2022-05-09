@@ -265,7 +265,7 @@ return view.extend({
       "dns_mode",
       _("DNS Mode"),
       _(
-        "DNS server enhanced mode. Redir-host mode will response true results, Fake-ip mode will response fake results quickly but may bring some issues."
+        "DNS server enhanced mode. Redir-host mode will response true results, Fake-ip mode will response fake results quickly. You had better select 'Fake-ip' mode to avoid some issues."
       )
     );
     o.value("redir-host", "redir-host");
