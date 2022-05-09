@@ -153,31 +153,11 @@ return view.extend({
     o = s.taboption(
       "general",
       form.Value,
-      "http_port",
-      _("Http Port"),
-      _("The port of http proxy server. Set 0 to close http proxy.")
-    );
-    o.datatype = "port";
-    o.rmempty = false;
-    o.default = 7890;
-
-    o = s.taboption(
-      "general",
-      form.Value,
-      "socks_port",
-      _("Socks Port"),
-      _("The port of socks proxy server. Set 0 to close socks proxy.")
-    );
-    o.datatype = "port";
-    o.rmempty = false;
-    o.default = 7891;
-
-    o = s.taboption(
-      "general",
-      form.Value,
       "mixed_port",
-      _("Mixed Port"),
-      _("The port of http and socks proxy server. Set 0 to close mixed proxy.")
+      _("Socks & HTTP Port"),
+      _(
+        "The port of http and socks proxy server. Set 0 to close socks and http proxy."
+      )
     );
     o.datatype = "port";
     o.rmempty = false;
@@ -216,15 +196,6 @@ return view.extend({
     o.datatype = "ipaddr";
     o.rmempty = false;
     o.default = "0.0.0.0";
-
-    o = s.taboption(
-      "addition",
-      form.Flag,
-      "udp_tproxy_enabled",
-      _("UDP Tproxy"),
-      _("Enable UDP transparent proxy.")
-    );
-    o.rmempty = false;
 
     o = s.taboption(
       "addition",
@@ -294,7 +265,7 @@ return view.extend({
       "dns_mode",
       _("DNS Mode"),
       _(
-        "DNS server enhanced mode. Redir-host mode will response true results, Fake-ip mode will response fake results quickly but may bring some issues."
+        "DNS server enhanced mode. Redir-host mode will response true results, Fake-ip mode will response fake results quickly. You had better select 'Fake-ip' mode to avoid some issues."
       )
     );
     o.value("redir-host", "redir-host");
