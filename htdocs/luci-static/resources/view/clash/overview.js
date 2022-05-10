@@ -127,7 +127,7 @@ return view.extend({
 
     o = s.taboption(
       "general",
-      form.Value,
+      form.ListValue,
       "current_profile",
       _("Profile"),
       _("List of avaliable configurations for clash.")
@@ -139,7 +139,7 @@ return view.extend({
 
     o = s.taboption(
       "general",
-      form.Value,
+      form.ListValue,
       "mode",
       _("Mode"),
       _("Clash router mode.")
@@ -172,7 +172,7 @@ return view.extend({
     );
     o.datatype = "string";
     o.rmempty = false;
-    o.default = "/usr/bin/clash";
+    o.placeholder = "/usr/bin/clash";
 
     o = s.taboption(
       "addition",
@@ -196,6 +196,7 @@ return view.extend({
     o.datatype = "ipaddr";
     o.rmempty = false;
     o.default = "0.0.0.0";
+    o.placeholder = "0.0.0.0";
 
     o = s.taboption(
       "addition",
@@ -207,7 +208,7 @@ return view.extend({
 
     o = s.taboption(
       "addition",
-      form.Value,
+      form.ListValue,
       "log_level",
       _("Log Level"),
       _("Clash by default prints log.")
@@ -228,6 +229,8 @@ return view.extend({
     );
     o.datatype = "ipaddr";
     o.rmempty = false;
+    o.default = "0.0.0.0";
+    o.placeholder = "0.0.0.0";
 
     o = s.taboption(
       "addition",
@@ -238,6 +241,8 @@ return view.extend({
     );
     o.datatype = "port";
     o.rmempty = false;
+    o.default = 9090;
+    o.placeholder = 9090;
 
     o = s.taboption(
       "dns",
@@ -248,6 +253,8 @@ return view.extend({
     );
     o.datatype = "ipaddr";
     o.rmempty = false;
+    o.default = "127.0.0.1";
+    o.placeholder = "127.0.0.1";
 
     o = s.taboption(
       "dns",
@@ -258,10 +265,12 @@ return view.extend({
     );
     o.datatype = "port";
     o.rmempty = false;
+    o.default = 5353;
+    o.placeholder = 5353;
 
     o = s.taboption(
       "dns",
-      form.Value,
+      form.ListValue,
       "dns_mode",
       _("DNS Mode"),
       _(
@@ -283,6 +292,7 @@ return view.extend({
     );
     o.datatype = "ipaddr";
     o.rmempty = false;
+    o.placeholder = "114.114.114.114";
 
     o = s.taboption(
       "dns",
@@ -295,6 +305,7 @@ return view.extend({
     );
     o.datatype = "string";
     o.rmempty = false;
+    o.placeholder = "114.114.114.114";
 
     o = s.taboption(
       "dns",
@@ -308,6 +319,7 @@ return view.extend({
     o.depends("dns_mode", "redir-host");
     o.datatype = "string";
     o.rmempty = false;
+    o.placeholder = "8.8.8.8";
 
     s = m.section(form.GridSection, "profile", _("Profiles"));
     s.sortable = true;
