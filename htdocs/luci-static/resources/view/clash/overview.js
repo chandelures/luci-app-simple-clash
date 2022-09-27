@@ -270,19 +270,6 @@ return view.extend({
 
     o = s.taboption(
       "dns",
-      form.ListValue,
-      "dns_mode",
-      _("DNS Mode"),
-      _(
-        "DNS server enhanced mode. Redir-host mode will response true results, Fake-ip mode will response fake results quickly. You had better select 'Fake-ip' mode to avoid some issues."
-      )
-    );
-    o.value("redir-host", "redir-host");
-    o.value("fake-ip", "fake-ip");
-    o.rmempty = false;
-
-    o = s.taboption(
-      "dns",
       form.DynamicList,
       "default_nameserver",
       _("Default Nameservers"),
@@ -306,20 +293,6 @@ return view.extend({
     o.datatype = "string";
     o.rmempty = false;
     o.placeholder = "114.114.114.114";
-
-    o = s.taboption(
-      "dns",
-      form.DynamicList,
-      "fallback",
-      _("Fallbacks"),
-      _(
-        "Nameservers are used to resolve the DNS query when GEOIP contry is not 'CN'. Support UDP, TCP, DOT, DOH."
-      )
-    );
-    o.depends("dns_mode", "redir-host");
-    o.datatype = "string";
-    o.rmempty = false;
-    o.placeholder = "8.8.8.8";
 
     s = m.section(form.GridSection, "profile", _("Profiles"));
     s.sortable = true;
