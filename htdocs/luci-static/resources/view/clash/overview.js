@@ -324,6 +324,20 @@ return view.extend({
     o.rmempty = false;
     o.depends("type", "URL");
 
+    o = s.option(form.DummyValue, "_modify_time", _("Last Update"));
+    o.modalonly = false;
+    o.load = function (section_id) {
+      return fs
+        .stat("/etc/clash/profiles/%s.yaml".format(section_id))
+        .then(function (fileStat) {
+          var mtime = new Date(fileStat.mtime * 1000);
+          return mtime.toLocaleString();
+        })
+        .catch(function (e) {
+          return "Never";
+        });
+    };
+
     s.handleCreateProfile = function (m, name, type, url, ev) {
       var section_id = name.isValid("_new_") ? name.formvalue("_new_") : null;
       var type_value = type.isValid("_new_") ? type.formvalue("_new_") : "";
