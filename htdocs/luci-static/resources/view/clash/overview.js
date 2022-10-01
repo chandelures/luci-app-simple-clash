@@ -360,9 +360,7 @@ return view.extend({
             uci.set("clash", section_id, "url", url_value);
         })
         .then(function () {
-          if (type_value == "Static")
-            return s.renderMoreOptionsModal(section_id);
-          if (type_value == "URL") return ui.hideModal();
+          return ui.hideModal();
         });
     };
 
