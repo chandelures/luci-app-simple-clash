@@ -323,6 +323,13 @@ return view.extend({
     );
     o.rmempty = false;
     o.depends("type", "URL");
+    o.textvalue = function (section_id) {
+      var maxLen = 40;
+      var cval = this.cfgvalue(section_id);
+      if (cval == null) return this.default;
+      if (cval.length <= maxLen) return cval;
+      return "%h...".format(cval.slice(0, maxLen))
+    };
 
     o = s.option(form.DummyValue, "_modify_time", _("Last Update"));
     o.modalonly = false;
