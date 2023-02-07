@@ -135,7 +135,7 @@ return view.extend({
     for (var v of L.uci.sections("clash", "profile")) {
       o.value(v[".name"], v[".name"]);
     }
-    o.rmempty = false;
+    o.optional = true;
 
     o = s.taboption(
       "general",
@@ -328,7 +328,7 @@ return view.extend({
       var cval = this.cfgvalue(section_id);
       if (cval == null) return this.default;
       if (cval.length <= maxLen) return cval;
-      return "%h...".format(cval.slice(0, maxLen))
+      return "%h...".format(cval.slice(0, maxLen));
     };
 
     o = s.option(form.DummyValue, "_modify_time", _("Last Update"));
